@@ -8,7 +8,7 @@ const AppRouter = () => {
     return (
         <Routes>
             <Route path="/admin" element={<AdminLayout />}>
-                <Route path="" element={<AdminDashboard />} />
+                <Route path="/admin" element={<AdminDashboard />} />
             </Route>
             <Route path="/dang-nhap" element={<Login />} />
             <Route path="/dang-ky" element={<Register />} />
