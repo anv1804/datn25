@@ -9,7 +9,7 @@ const signToken = (id) => {
 
 exports.register = async (req, res) => {
   try {
-    const { fullName, email, password, role } = req.body;
+    const { fullName, email, password, role, userType } = req.body;
 
     // Kiểm tra email tồn tại
     const existingUser = await User.findOne({ email });
@@ -25,7 +25,8 @@ exports.register = async (req, res) => {
       fullName,
       email,
       password,
-      role: role || 'user'
+      role: role || 'user',
+      userType
     });
 
     // Tạo token
@@ -51,27 +52,27 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Kiểm tra email và password có tồn tại
+    // Check if email and password are provided
     if (!email || !password) {
       return res.status(400).json({
         status: 'error',
-        message: 'Vui lòng cung cấp email và mật khẩu'
+        message: 'Please provide email and password'
       });
     }
 
-    // Kiểm tra user có tồn tại và password có đúng
+    // Find user and validate password
     const user = await User.findOne({ email }).select('+password');
     if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({
         status: 'error',
-        message: 'Email hoặc mật khẩu không đúng'
+        message: 'Incorrect email or password'
       });
     }
 
-    // Tạo token
+    // Generate token
     const token = signToken(user._id);
 
-    // Loại bỏ password từ output
+    // Exclude password from response
     user.password = undefined;
 
     // Cập nhật trạng thái online

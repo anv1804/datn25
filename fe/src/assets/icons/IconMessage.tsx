@@ -3,46 +3,34 @@ import React from 'react'
 const IconMessage = () => {
     return (
         <svg
-            width={24}
-            height={24}
+            width="24"
+            height="24"
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
         >
             <path
-                d="M8 10H9"
+                d="M8 10H16"
                 stroke="currentColor"
-                strokeWidth="1.5"
-                strokeMiterlimit={10}
+                strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
             />
             <path
-                d="M11 10H12"
+                d="M8 14H13"
                 stroke="currentColor"
-                strokeWidth="1.5"
-                strokeMiterlimit={10}
+                strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
             />
             <path
-                d="M14 10H15"
+                d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 13.9021 3.5901 15.6665 4.59721 17.1199C4.70168 17.2707 4.7226 17.4653 4.64529 17.6317L3.42747 20.2519C3.23699 20.5853 3.47768 21 3.86159 21H12Z"
                 stroke="currentColor"
-                strokeWidth="1.5"
-                strokeMiterlimit={10}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-            />
-            <path
-                d="M7 18.43H11L15.45 21.39C16.11 21.83 17 21.36 17 20.56V18.43C20 18.43 22 16.43 22 13.43V7.42999C22 4.42999 20 2.42999 17 2.42999H7C4 2.42999 2 4.42999 2 7.42999V13.43C2 16.43 4 18.43 7 18.43Z"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeMiterlimit={10}
+                strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
             />
         </svg>
-
     )
 }
 

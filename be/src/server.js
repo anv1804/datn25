@@ -18,7 +18,11 @@ const server = http.createServer(app);
 socketManager.init(server);
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
 app.use(express.json());
 
 // Serve static files from uploads directory
