@@ -1,8 +1,71 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Slogan from './components/Slogan';
 import Social from './components/Social';
+import { login } from '@/services/authService';
+import { useAppDispatch } from '@/hooks/redux';
+import { setCredentials } from '@/store/features/auth/authSlice';
+import { showSuccess, showError } from '@/utils/messageUtils';
 
 const Login = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Simple validation
+    if (!formData.email || !formData.password) {
+      showError("Vui lòng điền đầy đủ thông tin");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await login(formData);
+      
+      if (response.status === "success") {
+        // Set user credentials in Redux store
+        dispatch(setCredentials({
+          user: response.data.user,
+          token: response.token
+        }));
+        
+        showSuccess("Đăng nhập thành công! Đang chuyển hướng...");
+        
+        // Redirect based on user role
+        setTimeout(() => {
+          if (response.data.user.role === "user") {
+            navigate("/user");
+          } else if (["admin", "collaborator"].includes(response.data.user.role)) {
+            navigate("/admin");
+          }
+        }, 1000);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        showError(error.message);
+      } else {
+        showError("Đăng nhập thất bại. Vui lòng thử lại sau.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section className="bg-white">
       <div className="grid grid-cols-1 lg:grid-cols-2 h-screen">
@@ -32,10 +95,10 @@ const Login = () => {
                 Tạo tài khoản ở đây!
               </Link>
             </p>
-            <form action="#" method="POST" className="mt-8">
+            <form onSubmit={handleSubmit} className="mt-8">
               <div className="space-y-5">
                 <div>
-                  <label htmlFor="" className="text-base font-medium text-gray-900">
+                  <label htmlFor="email" className="text-base font-medium text-gray-900">
                     Email
                   </label>
                   <div className="mt-2.5 relative text-gray-400 focus-within:text-gray-600">
@@ -57,9 +120,11 @@ const Login = () => {
                     </div>
                     <input
                       type="email"
-                      name=""
-                      id=""
+                      name="email"
+                      id="email"
                       placeholder="nguyenan@edu.com.vn"
+                      value={formData.email}
+                      onChange={handleChange}
                       className="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                     />
                   </div>
@@ -67,7 +132,7 @@ const Login = () => {
                 <div>
                   <div className="flex items-center justify-between">
                     <label
-                      htmlFor=""
+                      htmlFor="password"
                       className="capitalize text-base font-medium text-gray-900"
                     >
                       Mật Khẩu
@@ -99,9 +164,11 @@ const Login = () => {
                     </div>
                     <input
                       type="password"
-                      name=""
-                      id=""
+                      name="password"
+                      id="password"
                       placeholder="Nhập mật khẩu"
+                      value={formData.password}
+                      onChange={handleChange}
                       className="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                     />
                   </div>
@@ -109,9 +176,10 @@ const Login = () => {
                 <div>
                   <button
                     type="submit"
-                    className="inline-flex items-center justify-center w-full px-4 py-4 text-base font-semibold text-white transition-all duration-200 border border-transparent rounded-md bg-gradient-to-r from-fuchsia-600 to-blue-600 focus:outline-none hover:opacity-80 focus:opacity-80 capitalize"
+                    disabled={loading}
+                    className="inline-flex items-center justify-center w-full px-4 py-4 text-base font-semibold text-white transition-all duration-200 border border-transparent rounded-md bg-gradient-to-r from-fuchsia-600 to-blue-600 focus:outline-none hover:opacity-80 focus:opacity-80 capitalize disabled:opacity-70 disabled:cursor-not-allowed"
                   >
-                    Đăng Nhập
+                    {loading ? "Đang xử lý..." : "Đăng Nhập"}
                   </button>
                 </div>
               </div>
@@ -121,7 +189,6 @@ const Login = () => {
         </div>
       </div>
     </section>
-
   );
 };
 
