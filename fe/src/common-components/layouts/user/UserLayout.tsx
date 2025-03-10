@@ -4,8 +4,11 @@ import { useAppSelector, useAppDispatch } from '@/hooks/redux';
 import { selectCurrentUser, logoutAsync } from '@/store/features/auth/authSlice';
 import { UserOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons';
 import { showSuccess } from '@/utils/messageUtils';
+import SideBarLeft from '@/common-components/SideBarLeft';
+import SideBarRight from '@/common-components/SideBarRight';
+import { useMediaQuery } from 'react-responsive';
 
-const { Header, Content, Footer } = Layout;
+const { Content } = Layout;
 
 const UserLayout = () => {
   const user = useAppSelector(selectCurrentUser);
@@ -41,25 +44,30 @@ const UserLayout = () => {
     </Menu>
   );
 
+  const isTabletOrMobile = useMediaQuery({ query: '(max-width: 768px)' });
+
   return (
-    <Layout className="min-h-screen">
-      <Header className="bg-white shadow-md flex items-center justify-between px-6">
-        <div className="text-xl font-bold text-blue-600">Hệ thống học tập</div>
-        <div className="flex items-center gap-4">
-          <Dropdown overlay={userMenu} trigger={['click']} placement="bottomRight">
-            <Button type="text" className="flex items-center">
-              <span className="mr-2">{user?.name || user?.username}</span>
-              <UserOutlined />
-            </Button>
-          </Dropdown>
+    <Layout className="flex flex-row min-h-screen bg-gray-100">
+      {/* Left Sidebar - Navigation */}
+      <div className={`hidden md:block`}>
+        <SideBarLeft />
+      </div>
+
+      {/* Main Content Area */}
+      <Layout className="flex-1 overflow-hidden">
+        <Content className="p-6 overflow-y-auto">
+          <div className="max-w-7xl mx-auto">
+            <Outlet />
+          </div>
+        </Content>
+      </Layout>
+
+      {/* Right Sidebar - Widgets & Info */}
+      {!isTabletOrMobile && (
+        <div className="hidden md:block">
+          <SideBarRight />
         </div>
-      </Header>
-      <Content className="p-6">
-        <Outlet />
-      </Content>
-      <Footer className="text-center">
-        Hệ thống học tập © {new Date().getFullYear()} - Bản quyền thuộc về chúng tôi
-      </Footer>
+      )}
     </Layout>
   );
 };

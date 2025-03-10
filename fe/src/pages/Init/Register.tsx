@@ -6,6 +6,7 @@ import { register } from "@/services/authService"
 import { useAppDispatch } from "@/hooks/redux"
 import { setCredentials } from "@/store/features/auth/authSlice"
 import { showSuccess, showError } from "@/utils/messageUtils"
+import { ROUTES } from "@/configs/routes.config"
 
 const Register = () => {
     const navigate = useNavigate();
@@ -53,12 +54,12 @@ const Register = () => {
                 
                 showSuccess("Đăng ký thành công! Đang chuyển hướng...");
                 
-                // Redirect based on user role
+                // Redirect based on user role using ROUTES config
                 setTimeout(() => {
                     if (response.data.user.role === "user") {
-                        navigate("/user");
+                        navigate(ROUTES.USER.ROOT);
                     } else if (["admin", "collaborator"].includes(response.data.user.role)) {
-                        navigate("/admin");
+                        navigate(ROUTES.ADMIN.ROOT);
                     }
                 }, 1000);
             }
@@ -95,7 +96,7 @@ const Register = () => {
                         <p className="mt-2 text-base text-gray-600">
                             Đã có tài khoản?{" "}
                             <Link
-                                to={`/dang-nhap`}
+                                to={ROUTES.LOGIN}
                                 title=""
                                 className="font-medium text-blue-600 transition-all duration-200 hover:text-blue-700 focus:text-blue-700 hover:underline"
                             >

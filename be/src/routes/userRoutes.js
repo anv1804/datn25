@@ -28,4 +28,11 @@ router.post(
 );
 router.delete('/photo-album/:photoId', userController.removeFromPhotoAlbum);
 
+// Route to get all users (including teachers)
+router.get('/', userController.getAllUsers);
+
+// Route cho giáo viên
+router.get('/teachers', userController.getTeachers); // Lấy danh sách giáo viên
+router.get('/students', userController.getStudents); // Lấy danh sách học sinh
+
 module.exports = router; 

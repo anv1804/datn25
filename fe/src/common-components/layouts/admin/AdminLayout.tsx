@@ -1,7 +1,7 @@
 import { Layout } from 'antd';
 import { Outlet } from 'react-router-dom';
 import AdminSideBarLeft from './adminSidebarLeft/AdminSidebarLeft';
-const SideBarLeft = () => {
+const AdminLayout = () => {
 
     return (
         <Layout className="h-screen">
@@ -15,4 +15,4 @@ const SideBarLeft = () => {
     );
 };
 
-export default SideBarLeft
+export default AdminLayout

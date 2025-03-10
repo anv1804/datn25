@@ -64,6 +64,12 @@ const userSchema = new mongoose.Schema({
   lastActive: {
     type: Date,
     default: Date.now
+  },
+  userType: {
+    type: String,
+    enum: ['student', 'teacher'],
+    required: [true, 'Vui lòng chỉ định loại người dùng'],
+    default: 'student'
   }
 }, {
   timestamps: true

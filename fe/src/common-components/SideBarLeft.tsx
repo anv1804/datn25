@@ -1,46 +1,45 @@
-import { useState, useEffect } from "react";
-import { Layout, Menu, Avatar, Button, Upload, Modal } from "antd";
+import React, { useState, useEffect } from "react";
+import { Layout, Menu, Avatar, Button, Input, Upload, Modal } from "antd";
+import { useSidebar } from '@/helpers/sidebarHelper';
 import { Link, useNavigate } from "react-router-dom";
-import IconLogoutFlash from "@/assets/icons/IconLogoutFlash";
-import IconMenuFlat from "@/assets/icons/IconMenuFlat";
+import "tailwindcss/tailwind.css";
+
 import IconWallet from "@/assets/icons/IconWallet";
+import IconLogoutFlash from "@/assets/icons/IconLogoutFlash";
 import IconUploadFlat from "@/assets/icons/IconUploadFlat";
-import { useSidebar } from "@/helpers/sidebarHelper";
-import IconClass from "@/assets/icons/iconClass";
-import IconBookMark from "@/assets/icons/IconBookMark";
-import IconChart from "@/assets/icons/iconChart";
-import IconHappy from "@/assets/icons/iconHappy";
-import IconUser from "@/assets/icons/IconUser";
-import IconBook from "@/assets/icons/IconBook";
-import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import { logoutAsync, selectCurrentUser } from "@/store/features/auth/authSlice";
+import IconMenuFlat from "@/assets/icons/IconMenuFlat";
+import IconFlash from "@/assets/icons/IconFlash";
+import IconCalendar from '@/assets/icons/IconCalendar';
+import IconEducation from "@/assets/icons/IconEducation";
+import IconChat from "@/assets/icons/IconChat";
+import IconCompany from "@/assets/icons/IconCompany";
+import IconFolder from "@/assets/icons/IconFolder";
+import { useAppDispatch } from "@/hooks/redux";
 import { showSuccess } from "@/utils/messageUtils";
+import { logoutAsync } from "@/store/features/auth/authSlice";
 
 const { Sider } = Layout;
 
-const AdminSideBarLeft = () => {
+const SideBarLeft = () => {
   const [collapsed, setCollapsed] = useState(false);
-
-  // Load collapsed state from localStorage
-  useEffect(() => {
-    const savedCollapsedState = localStorage.getItem('adminSidebarCollapsed');
-    if (savedCollapsedState) {
-      setCollapsed(JSON.parse(savedCollapsedState));
-    }
-  }, []);
-
-  const toggleCollapsed = () => {
-    setCollapsed(!collapsed);
-    // Save collapsed state to localStorage
-    localStorage.setItem('adminSidebarCollapsed', JSON.stringify(!collapsed));
-  };
-
-  const { isSidebarVisible, closeSidebar } = useSidebar();
+  const toggleCollapsed = () => setCollapsed(!collapsed);
+  const { isSidebarVisible, toggleSidebar, closeSidebar } = useSidebar();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const currentUser = useAppSelector(selectCurrentUser);
-  
-  // Handle logout with confirmation
+  const props = {
+    name: "file",
+    action: "/upload",
+    headers: {
+      authorization: "Bearer your-auth-token",
+    },
+    onChange(info: any) {
+      if (info.file.status === "done") {
+        console.log(`${info.file.name} file uploaded successfully`);
+      } else if (info.file.status === "error") {
+        console.log(`${info.file.name} file upload failed.`);
+      }
+    },
+  };
   const handleLogout = () => {
     Modal.confirm({
       title: 'Đăng xuất',
@@ -54,24 +53,8 @@ const AdminSideBarLeft = () => {
       }
     });
   };
-  
-  const props = {
-    name: "file",
-    action: "/upload", // URL xử lý upload file
-    headers: {
-      authorization: "Bearer your-auth-token",
-    },
-    onChange(info: any) {
-      if (info.file.status === "done") {
-        console.log(`${info.file.name} file uploaded successfully`);
-      } else if (info.file.status === "error") {
-        console.log(`${info.file.name} file upload failed.`);
-      }
-    },
-  };
-
   return (
-    <div className={`sidebarleftadmin w-full h-screen max-w-[240px] ${!collapsed ? "text-2xl" : "max-w-[80px]"} overflow-auto`}>
+    <div className={`sidebarleft w-full max-w-[240px] ${!collapsed ? "text-2xl" : "max-w-[80px]"} overflow-auto`}>
       {/* Overlay */}
       {isSidebarVisible && (
         <div
@@ -79,11 +62,12 @@ const AdminSideBarLeft = () => {
           onClick={closeSidebar}
         />
       )}
+
       {/* Sidebar */}
       <Sider
         width={240}
-        className={`h-screen bg-white border-r-[1px] float-left overflow-x-hidden overflow-y-auto transition-transform duration-300 z-50 top-0 ${isSidebarVisible ? "translate-x-0 " : "-translate-x-full "
-          } md:translate-x-0 fixed`}
+        className={`h-screen bg-white border-r-[1px] float-left overflow-x-hidden overflow-y-auto transition-transform duration-300 z-50 top-0 ${isSidebarVisible ? "translate-x-0 " : "translate-x-full disabled"
+          } md:translate-x-0`}
         // collapsible
         collapsed={collapsed}
       >
@@ -91,7 +75,7 @@ const AdminSideBarLeft = () => {
         <div className={`absolute top-5 z-50  ${collapsed ? "right-6" : "right-3"}`}>
           <Button
             onClick={toggleCollapsed}
-            className="bg-transparent hover:bg-gray-200 border-none shadow-none "
+            className="bg-transparent hover:bg-gray-200 border-none shadow-none"
             icon={<IconMenuFlat />}
           />
         </div>
@@ -117,8 +101,8 @@ const AdminSideBarLeft = () => {
 
             {!collapsed && (
               <div>
-                <div className="text-black font-bold">{currentUser?.name || currentUser?.username}</div>
-                <div className="text-gray-400 text-[10px]">{currentUser?.role === 'admin' ? 'Quản trị viên' : 'Cộng tác viên'}</div>
+                <div className="text-black font-bold">Jone Copper</div>
+                <div className="text-gray-400 text-[10px]">UI Designer</div>
               </div>
             )}
           </div>
@@ -130,34 +114,34 @@ const AdminSideBarLeft = () => {
               className="w-full"
               inlineCollapsed={collapsed}
             >
-              <Menu.Item key="1" icon={<IconChart />}>
-                <Link to={`/admin`}>
-                  {collapsed ? <span className="ml-0"></span> : <span className="ml-2">Thống Kê</span>}
+              <Menu.Item key="1" icon={<IconFlash />}>
+                <Link to={`/`}>
+                  {collapsed ? <span className="ml-0"></span> : <span className="ml-2">Trang Chủ</span>}
                 </Link>
               </Menu.Item>
-              <Menu.Item key="2" icon={<IconBookMark />}>
-                <Link to={`/admin/su-kien`}>
-                  {collapsed ? <span className="ml-0"></span> : <span className="ml-2">Sự Kiện</span>}
+              <Menu.Item key="2" icon={<IconCalendar />}>
+                <Link to={`/lich-trinh`}>
+                  {collapsed ? <span className="ml-0"></span> : <span className="ml-2">Lịch Trình</span>}
                 </Link>
               </Menu.Item>
-              <Menu.Item key="3" icon={<IconClass />}>
-                <Link to={`/admin/lop-hoc`}>
+              <Menu.Item key="3" icon={<IconEducation />}>
+                <Link to={`/lop-hoc`}>
                   {collapsed ? <span className="ml-0"></span> : <span className="ml-2">Lớp Học</span>}
                 </Link>
               </Menu.Item>
-              <Menu.Item key="4" icon={<IconHappy />}>
-                <Link to={`/admin/hoc-sinh`}>
-                  {collapsed ? <span className="ml-0"></span> : <span className="ml-2">Học Sinh</span>}
+              <Menu.Item key="4" icon={<IconChat />}>
+                <Link to={`/tro-chuyen`}>
+                  {collapsed ? <span className="ml-0"></span> : <span className="ml-2">Trò Chuyện</span>}
                 </Link>
               </Menu.Item>
-              <Menu.Item key="5" icon={<IconUser />}>
-                <Link to={`/admin/giao-vien`}>
-                  {collapsed ? <span className="ml-0"></span> : <span className="ml-2">Giáo Viên</span>}
+              <Menu.Item key="5" icon={<IconCompany />}>
+                <Link to={`/`}>
+                  {collapsed ? <span className="ml-0"></span> : <span className="ml-2">Trang Chủ</span>}
                 </Link>
               </Menu.Item>
-              <Menu.Item key="6" icon={<IconBook />}>
-                <Link to={`/admin/mon-hoc`}>
-                  {collapsed ? <span className="ml-0"></span> : <span className="ml-2">Môn Học</span>}
+              <Menu.Item key="6" icon={<IconFolder />}>
+                <Link to={`/`}>
+                  {collapsed ? <span className="ml-0"></span> : <span className="ml-2">Tài Liệu</span>}
                 </Link>
               </Menu.Item>
               <Menu.Item key="7" icon={<IconWallet />}>
@@ -187,8 +171,8 @@ const AdminSideBarLeft = () => {
             </div>
             {/* Logout Button */}
             <div className="mt-8 px-6">
-              <Button 
-                icon={<IconLogoutFlash />} 
+              <Button
+                icon={<IconLogoutFlash />}
                 onClick={handleLogout}
                 className={`w-full ${!collapsed ? "flex items-center justify-start" : "flex items-center justify-center"} !border-none hover:bg-gray-100`}
               >
@@ -202,4 +186,4 @@ const AdminSideBarLeft = () => {
   );
 };
 
-export default AdminSideBarLeft;
+export default SideBarLeft;

@@ -203,4 +203,49 @@ exports.getPhotoAlbum = async (req, res) => {
       message: error.message
     });
   }
+};
+
+exports.getTeachers = async (req, res) => {
+  try {
+    const teachers = await User.find({ userType: 'teacher' });
+    res.status(200).json({
+      status: 'success',
+      data: { teachers }
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message
+    });
+  }
+};
+
+exports.getStudents = async (req, res) => {
+  try {
+    const students = await User.find({ userType: 'student' });
+    res.status(200).json({
+      status: 'success',
+      data: { students }
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message
+    });
+  }
+};
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find(); // Fetch all users
+    res.status(200).json({
+      status: 'success',
+      data: { users }
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message
+    });
+  }
 }; 
